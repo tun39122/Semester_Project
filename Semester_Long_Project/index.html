@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+	<style> .btn{border:1px solid black; padding:5px;display:inline-block} </style>
+</head>
+<body>
+	<div class="container">
+		<h1>Global Natural Gas Price by Month</h1>
+        <h5>This data includes the monthly global Natural Gas prices from January 1997 to August 2020 </h5>
+       <br>
+		<p>The Bar Graph ranks the top five months with the highest global Natural Gas prices, in U.S Dollars<br>
+            The Line Graph represents the historic global Natural Gas prices from January 1997 to August 2020, for a total of 283 months
+        </p>
+		<form>
+			<input type="button" value="Bar Graph" id="btn_1">
+            <input type = "button" value = "Line Graph" id = "btn_2">
+		</form>
+		<br><br><br>
+		<div id="output"></div>
+        <div id="textDisplayed1" class="text"></div> 
+		<div id="textDisplayed2" class="text"></div>
+	</div>
+</body>
+<script>
+
+
+
+
+function getTheData(){
+
+
+	
+    $.getJSON("https://pkgstore.datahub.io/core/natural-gas/monthly_json/data/dbd6262f71e7c30614c2d6eb4dfcfb72/monthly_json.json",function(result){
+        console.log(result);
+
+        let newdata = [];
+        for (let i = 0; i<result.length;i++){
+            let answer = [];
+            answer[0] = result[i]["Price"]
+            answer[1] = result[i]["Month"]
+            
+            newdata[i]=answer
+           
+        }
+        newdata.sort(function(pos1,pos2){return pos2[0]-pos1[0]});
+        console.log(newdata)
+
+        plotTheChart(newdata);
+  
+    })}
+  
+
+
+
+    function getTheInfo(){
+	
+    
+
+    $.getJSON("https://pkgstore.datahub.io/core/natural-gas/monthly_json/data/dbd6262f71e7c30614c2d6eb4dfcfb72/monthly_json.json",function(result){
+        console.log(result);
+
+        let newdata = [];
+        for (let i = 0; i<result.length;i++){
+            let answer = [];
+            answer[0] = result[i]["Price"]
+            answer[1] = result[i]["Month"]
+          
+            newdata[i]=answer
+           
+        }
+
+        plotTheGraph(newdata);
+    
+    })
+   
+
+
+}
+function plotTheChart(data){
+    let imageurl = "https://image-charts.com/chart?"
+    imageurl = imageurl + "chco=ff5555|706c61|899e8b|99c5b5|afece7|81f499&"
+    imageurl = imageurl + "chd=t:"+data[0][0]+","+data[1][0]+","+data[2][0]+","+data[3][0]+","+data[4][0]+"&"
+    imageurl = imageurl + "chds=0,"+data[0][0]+"&"
+    imageurl = imageurl + "chs=700x400&"
+    imageurl = imageurl + "cht=bvs&"
+    imageurl = imageurl + "chxl=1:|"+ data[0][1]+"|"+data[1][1]+"|"+data[2][1]+"|"+data[3][1]+"|"+data[4][1]+"&"
+    imageurl = imageurl + "chxt=y,x";
+    console.log(imageurl)
+
+    $("#output").html("<img src='" + imageurl + "'>"); 
+}
+
+function plotTheGraph(data){
+
+    let price = "";
+    for (let i = 0; i < 284; i++){
+		price = price + data[i][0] ;
+		if (i < 283){
+            price = price + ",";
+        }
+    }
+    let month = "";
+    for (let i =0; i<284;i++){
+        month = month + data[i][1];
+        if (i<283){
+            month = month+","
+        }
+    }
+    let imageurl = "https://image-charts.com/chart?"
+	imageurl = imageurl + "chco=3072F3,ff0000,00ff00&"
+	imageurl = imageurl + "chd=t:" +price +  "&"
+	imageurl = imageurl + "chdl=Natural Gas Price&"
+	imageurl = imageurl + "chdlp=t&"
+	imageurl = imageurl + "chs=700x400&"
+	imageurl = imageurl + "cht=ls&"
+	imageurl = imageurl + "chxt=x,y";
+
+	console.log(imageurl);
+    
+	$("#output").html("<img src='" + imageurl + "'>"); 
+}
+
+
+
+
+$('#btn_1').click(function(){
+   
+   
+	getTheData();
+    
+})
+$('#btn_2').click(function(){
+    
+    getTheInfo();
+    
+    
+})
+</script>
+</html>
+
+
